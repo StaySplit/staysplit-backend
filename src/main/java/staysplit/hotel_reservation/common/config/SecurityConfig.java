@@ -30,7 +30,9 @@ public class SecurityConfig {
             "/oauth2/authorization/google",
             "/login/oauth2/code/google",
             "/api/customers/google/login",
-            "/oauth/**"
+            "/oauth/**",
+
+            "/api/review/**",
     };
 
     private final String[] GET_ALLOWED_URLS = {
