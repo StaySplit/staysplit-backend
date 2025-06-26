@@ -35,16 +35,13 @@ public class RoomService {
 
         RoomEntity room = RoomEntity.builder()
                 .hotel(provider.getHotel())
-                .photoUrl(request.photoUrl())
                 .roomType(request.roomType())
                 .price(request.price())
                 .description(request.description())
                 .maxOccupancy(request.occupancy())
-                .roomType(request.roomType())
                 .build();
 
         roomRepository.save(room);
-        providerRepository.save(provider);
         return RoomInfoResponse.from(room);
     }
 
@@ -56,13 +53,13 @@ public class RoomService {
                     ErrorCode.UNAUTHORIZED_PROVIDER.getMessage());
         }
 
-        room.updateRoom(request.roomType(), request.photoUrl(), request.maxOccupancy(),
+        room.updateRoom(request.roomType(), request.maxOccupancy(),
                 request.price(), request.description());
 
         return RoomInfoResponse.from(room);
     }
 
-    public RoomDeleteResponse deleteRoom(String email, Long roomId) {
+    public RoomDeleteResponse deleteRoom(String email, Integer roomId) {
         RoomEntity room = validateRoom(roomId);
         ProviderEntity provider = validateProvider(email);
         if (!provider.getId().equals(room.getHotel().getProvider().getId())) {
@@ -77,20 +74,18 @@ public class RoomService {
 
 
     @Transactional(readOnly = true)
-    public RoomInfoResponse findRoomById(Long roomId) {
+    public RoomInfoResponse findRoomById(Integer roomId) {
         RoomEntity room = validateRoom(roomId);
         return RoomInfoResponse.from(room);
     }
 
     @Transactional(readOnly = true)
-    public Page<RoomInfoResponse> findAllRoomsByHotel(Long hotelId, Pageable pageable) {
+    public Page<RoomInfoResponse> findAllRoomsByHotel(Integer hotelId, Pageable pageable) {
         HotelEntity hotel = validateHotelById(hotelId);
-        Page<RoomEntity> hotels = roomRepository.findByHotel_HotelId(hotelId, pageable);
-        return hotels.map(RoomInfoResponse::from);
+        Page<RoomEntity> rooms = roomRepository.findByHotel_HotelId(hotelId, pageable);
+        return rooms.map(RoomInfoResponse::from);
     }
 
-
-    // ------------//
 
     private boolean hasAuthority(ProviderEntity provider, RoomEntity room) {
 
@@ -101,13 +96,13 @@ public class RoomService {
         return true;
     }
 
-    private HotelEntity validateHotelById(Long hotelId) {
+    private HotelEntity validateHotelById(Integer hotelId) {
         return hotelRepository.findByHotelId(hotelId)
                 .orElseThrow(() -> new AppException(ErrorCode.HOTEL_NOT_FOUND,
                         ErrorCode.HOTEL_NOT_FOUND.getMessage()));
     }
 
-    private RoomEntity validateRoom(Long roomId) {
+    private RoomEntity validateRoom(Integer roomId) {
         return roomRepository.findById(roomId)
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND,
                         ErrorCode.ROOM_NOT_FOUND.getMessage()));

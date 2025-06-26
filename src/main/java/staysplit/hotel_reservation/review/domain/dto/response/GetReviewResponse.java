@@ -3,9 +3,9 @@ package staysplit.hotel_reservation.review.domain.dto.response;
 import staysplit.hotel_reservation.review.domain.entity.ReviewEntity;
 
 public record GetReviewResponse(
-        Long reviewId,
-        Long customerId,
-        Long hotelId,
+        Integer reviewId,
+        Integer userId,
+        Integer hotelId,
         String nickname,
         String content,
         Integer rating
@@ -14,7 +14,7 @@ public record GetReviewResponse(
     public static GetReviewResponse from(ReviewEntity review) {
         return new GetReviewResponse(
                 review.getId(),
-                review.geCustomerId(),
+                review.getUserId(),
                 review.getHotelId(),
                 review.getNickname(),
                 review.getContent(),

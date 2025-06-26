@@ -3,13 +3,12 @@ package staysplit.hotel_reservation.hotel.dto.response;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 
 public record GetHotelListResponse(
-        Long hotelId,
+        Integer hotelId,
         String name,
         String address,
         Integer starLevel,
         double rating,
-        Integer reviewCount,
-        String imageUrl
+        Integer reviewCount
 ) {
     public static GetHotelListResponse toDto(HotelEntity hotel) {
         return new GetHotelListResponse(
@@ -18,8 +17,7 @@ public record GetHotelListResponse(
                 hotel.getAddress(),
                 hotel.getStarLevel(),
                 hotel.getRating(),
-                hotel.getReviewCount(),
-                hotel.getImageUrl()
+                hotel.getReviewCount()
         );
     }
 }

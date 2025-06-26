@@ -8,7 +8,7 @@ import staysplit.hotel_reservation.room.domain.RoomEntity;
 
 
 @Repository
-public interface RoomRepository extends JpaRepository<RoomEntity, Long> {
-    Page<RoomEntity> findByHotel_HotelId(Long hotelId, Pageable pageable);
+public interface RoomRepository extends JpaRepository<RoomEntity, Integer> {
+    Page<RoomEntity> findByHotel_HotelId(Integer hotelId, Pageable pageable);
 
 }

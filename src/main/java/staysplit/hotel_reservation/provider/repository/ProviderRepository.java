@@ -11,7 +11,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface ProviderRepository extends JpaRepository<ProviderEntity, Long> {
+public interface ProviderRepository extends JpaRepository<ProviderEntity, Integer> {
 
     @Query("SELECT p FROM ProviderEntity p WHERE p.user.email = :email")
     Optional<ProviderEntity> findByEmail(@Param("email") String email);

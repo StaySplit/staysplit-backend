@@ -5,12 +5,13 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
+import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "review")
 @Getter
 @Setter(AccessLevel.PACKAGE)
 @Builder
@@ -21,17 +22,18 @@ public class ReviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "review_id")
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    CustomerEntity customer;
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id", nullable = false)
-    HotelEntity hotel;
+    private HotelEntity hotel;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2000)
     private String content;
 
     @Column(nullable = false)
@@ -48,6 +50,9 @@ public class ReviewEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Column(nullable = false, length = 50)
+    private String nickname;
+
     public void setContent(String content) {
         this.content = content;
     }
@@ -56,20 +61,19 @@ public class ReviewEntity {
         this.rating = rating;
     }
 
-    public Long geCustomerId() {
-        return customer != null ? customer.getId() : null;
+    public Integer getUserId() {
+        return user != null ? user.getId() : null;
     }
 
-    public Long getHotelId() {
+    public Integer getHotelId() {
         return hotel != null ? hotel.getHotelId() : null;
     }
 
     public String getNickname() {
-        return customer != null ? customer.getNickname() : null;
+        return this.nickname;
     }
 
     public void markDeleted() {
         this.deletedAt = LocalDateTime.now();
     }
-
 }

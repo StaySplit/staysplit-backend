@@ -38,7 +38,7 @@ public class CustomerController {
 
     // 사용자 정보 조회 - Admin
     @GetMapping("/{id}")
-    public Response<CustomerDetailsResponse> getUserDetails(@PathVariable Long id) {
+    public Response<CustomerDetailsResponse> getUserDetails(@PathVariable Integer id) {
         CustomerDetailsResponse customerDetailsResponse = customerService.findCustomerById(id);
         return Response.success(customerDetailsResponse);
     }

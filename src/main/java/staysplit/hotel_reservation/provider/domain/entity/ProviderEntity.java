@@ -10,10 +10,12 @@ import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "provider")
 public class ProviderEntity {
 
     @Id
-    private Long id;
+    @Column(name = "provider_id")
+    private Integer id;
 
     @MapsId // 이렇게 하면 user_id가 이 클래스의 PK
     @OneToOne

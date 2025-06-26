@@ -29,7 +29,7 @@ public class HotelController {
     //호텔 수정
     @PutMapping("/{hotelId}")
     public Response<GetHotelDetailResponse> updateHotel(
-            @PathVariable Long hotelId,
+            @PathVariable Integer hotelId,
             @RequestBody UpdateHotelRequest request,
             Authentication authentication){
 
@@ -39,7 +39,7 @@ public class HotelController {
 
     //호텔 상세 조회
     @GetMapping("/{hotelId}")
-    public Response<GetHotelDetailResponse> getHotelDetail(@PathVariable Long hotelId){
+    public Response<GetHotelDetailResponse> getHotelDetail(@PathVariable Integer hotelId){
         GetHotelDetailResponse response = hotelService.getHotelDetails(hotelId);
         return Response.success(response);
     }
@@ -55,7 +55,7 @@ public class HotelController {
 
     //호텔 삭제
     @DeleteMapping("/{hotelId}")
-    public Response<DeleteHotelResponse> deleteHotel(@PathVariable Long hotelId, Authentication authentication){
+    public Response<DeleteHotelResponse> deleteHotel(@PathVariable Integer hotelId, Authentication authentication){
 
         DeleteHotelResponse response = hotelService.deleteHotel(hotelId, authentication.getName());
         return Response.success(response);

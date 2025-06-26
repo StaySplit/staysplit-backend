@@ -12,10 +12,12 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "hotel")
 public class HotelEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long hotelId;
+    @Column(name = "hotel_id")
+    private Integer hotelId;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "provider_id", nullable = false)
@@ -33,7 +35,6 @@ public class HotelEntity {
 
     @Builder.Default
     private Integer reviewCount = 0; //리뷰 수
-    private String imageUrl; //메인 이미지
 
     public void updateHotel(UpdateHotelRequest request) {
         this.name = request.name();
@@ -43,7 +44,6 @@ public class HotelEntity {
         this.description = request.description();
         this.starLevel = request.starLevel();
         this.rating = request.rating();
-        this.imageUrl = request.imageUrl();
     }
 
 }

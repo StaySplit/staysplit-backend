@@ -29,19 +29,19 @@ public class RoomController {
     }
 
     @GetMapping("/{roomId}")
-    public Response<RoomInfoResponse> getRoomById(@PathVariable Long roomId) {
+    public Response<RoomInfoResponse> getRoomById(@PathVariable Integer roomId) {
         RoomInfoResponse roomInfoResponse = roomService.findRoomById(roomId);
         return Response.success(roomInfoResponse);
     }
 
     @DeleteMapping("/{roomId}")
-    public Response<RoomDeleteResponse> deleteRoom(@PathVariable Long roomId, Authentication authentication) {
+    public Response<RoomDeleteResponse> deleteRoom(@PathVariable Integer roomId, Authentication authentication) {
         RoomDeleteResponse response = roomService.deleteRoom(authentication.getName(), roomId);
         return Response.success(response);
     }
 
     @PutMapping("/{roomId}")
-    public Response<RoomInfoResponse> updateRoom(@PathVariable Long roomId,
+    public Response<RoomInfoResponse> updateRoom(@PathVariable Integer roomId,
                                                  @Valid @RequestBody UpdateRoomRequest updateRoomRequest,
                                                  Authentication authentication) {
         RoomInfoResponse response = roomService.updateRoom(authentication.getName(), updateRoomRequest);
@@ -52,7 +52,7 @@ public class RoomController {
     // TODO: HotelController에 옮기고, SecConfig에서 uri 열어두기
     // GET ALL ROOMS
     @GetMapping("/hotels/{hotelId}")
-    public Response<Page<RoomInfoResponse>> findAllRoomsByHotelId(@PathVariable Long hotelId,
+    public Response<Page<RoomInfoResponse>> findAllRoomsByHotelId(@PathVariable Integer hotelId,
                                                                   @PageableDefault(size = 10, sort = "price", direction = Sort.Direction.ASC)
                                                                   Pageable pageable) {
         Page<RoomInfoResponse> rooms = roomService.findAllRoomsByHotel(hotelId, pageable);

@@ -11,10 +11,12 @@ import staysplit.hotel_reservation.user.domain.enums.Role;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "user")
 public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")
+    private Integer id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -27,10 +29,10 @@ public class UserEntity extends BaseEntity {
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "login_source", nullable = false)
     private LoginSource loginSource;
 
-    @Column(unique = true)
+    @Column(name = "social_id", unique = true)
     private String socialId;
 
     public void changeEmail(String email) {
