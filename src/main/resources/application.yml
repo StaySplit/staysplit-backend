@@ -1,0 +1,49 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/staysplit
+    username: root
+    password: qwer1234
+  jpa:
+    show-sql: true
+    database: mysql
+    hibernate.ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            google:
+              client-id: ${GOOGLE_CLIENT_ID}
+              client-secret: ${GOOGLE_CLIENT_SECRET}
+
+              scope: openid, email, profile
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            authorization-grant-type: authorization_code
+        provider:
+          google:
+            authorization-uri:  https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+oauth:
+  google:
+    client-id: xxxx
+    client-secret: yyyy
+    redirect-uri: http://localhost:3000/oauth/google/redirect
+  kakao:
+    client-id: xxxx
+    redirect-uri: http://localhost:3000/oauth/kakao/redirect
+
+jwt:
+  secret: dG9ieXNwcmluZ2Jvb3RjYW1wZ3VpZGVkYXRhYmFzZWVuZ2xpc2hqYXBhbnNlZG9zaWJvb2tzdG9ieXNwcmluZ2Jvb3RjYW1w
+  expiration: 3000 #minutes
+
+iamport:
+  api-key: 0165681344553345
+  secret: XL8h5EJaZDMiEQyzqIIlsV8BkIQOTD23ZaLU2abAWPlNzy2ijXIgk6lbv6XkZhI4hQWfmSFYuUifTRWw
