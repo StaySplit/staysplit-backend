@@ -3,7 +3,6 @@ package staysplit.hotel_reservation.reservation.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import staysplit.hotel_reservation.reservation.domain.dto.response.ReservationDetailResponse;
-import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 
 @Entity
@@ -12,7 +11,7 @@ import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ReservationParticipant {
+public class ReservationParticipantEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,14 +20,10 @@ public class ReservationParticipant {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id", nullable = false)
     @Setter
-    private Reservation reservation;
+    private ReservationEntity reservation;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
-
-    @Transient
+    @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
 
     @Column(name = "split_amount", nullable = false)
@@ -46,38 +41,31 @@ public class ReservationParticipant {
         PENDING, COMPLETED, FAILED
     }
 
-
-    public static ReservationParticipant of(Reservation reservation, UserEntity user, Integer splitAmount) {
-        return ReservationParticipant.builder()
+    public static ReservationParticipantEntity of(ReservationEntity reservation, CustomerEntity customer, Integer splitAmount) {
+        return ReservationParticipantEntity.builder()
                 .reservation(reservation)
-                .user(user)
+                .customer(customer)
                 .splitAmount(splitAmount)
                 .invitationToken(java.util.UUID.randomUUID().toString())
                 .build();
     }
 
-
-    public static ReservationParticipant ofInvitation(Reservation reservation, Integer splitAmount) {
-        return ReservationParticipant.builder()
+    public static ReservationParticipantEntity ofInvitation(ReservationEntity reservation, Integer splitAmount) {
+        return ReservationParticipantEntity.builder()
                 .reservation(reservation)
-                .user(null)
+                .customer(null)
                 .splitAmount(splitAmount)
                 .invitationToken(java.util.UUID.randomUUID().toString())
                 .build();
     }
 
-    public static ReservationParticipant ofEmailInvitation(Reservation reservation, String email, Integer splitAmount) {
-        return ReservationParticipant.builder()
+    public static ReservationParticipantEntity ofEmailInvitation(ReservationEntity reservation, String email, Integer splitAmount) {
+        return ReservationParticipantEntity.builder()
                 .reservation(reservation)
-                .user(null)
+                .customer(null)
                 .splitAmount(splitAmount)
                 .invitationToken(java.util.UUID.randomUUID().toString())
                 .build();
-    }
-
-    @Deprecated
-    public static ReservationParticipant of(Reservation reservation, String email, String userName, Integer splitAmount) {
-        return ofEmailInvitation(reservation, email, splitAmount);
     }
 
     public void updatePaymentStatus(PaymentStatus status) {
@@ -88,23 +76,16 @@ public class ReservationParticipant {
         return this.paymentStatus == PaymentStatus.COMPLETED;
     }
 
-    public void linkUser(UserEntity user) {
-        this.user = user;
+    public void linkCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 
     public String getUserName() {
-        if (user == null) {
-            return "초대 대기중";
-        }
-        String email = user.getEmail();
-        return email != null ? email : "이메일 없음";
+        return customer != null ? customer.getName() : "초대 대기중";
     }
 
     public String getUserEmail() {
-        if (user == null) {
-            return null;
-        }
-        return user.getEmail();
+        return customer != null ? customer.getUser().getEmail() : null;
     }
 
     public ReservationDetailResponse.ParticipantInfo toParticipantInfo() {

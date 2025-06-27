@@ -3,9 +3,9 @@ package staysplit.hotel_reservation.reservation.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import staysplit.hotel_reservation.common.entity.BaseEntity;
+import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
-import staysplit.hotel_reservation.user.domain.entity.UserEntity;
+import staysplit.hotel_reservation.reservation.domain.dto.RoomDetailDto;
 import staysplit.hotel_reservation.reservation.domain.dto.response.ReservationDetailResponse;
 import staysplit.hotel_reservation.reservation.domain.dto.response.ReservationListResponse;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Reservation  {
+public class ReservationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,17 +28,12 @@ public class Reservation  {
     private Integer reservationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
-
+    @JoinColumn(name = "customer_id", nullable = false)
+    private CustomerEntity customer;
 
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id", nullable = false)
-    private HotelEntity hotel;
 
     @Column(name = "reservation_number", nullable = false, unique = true, length = 50)
     private String reservationNumber;
@@ -66,7 +61,11 @@ public class Reservation  {
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<ReservationParticipant> participants = new ArrayList<>();
+    private List<ReservationRoomEntity> reservationRooms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ReservationParticipantEntity> participants = new ArrayList<>();
 
     public enum ReservationStatus {
         PENDING, CONFIRMED, CANCELLED
@@ -80,13 +79,17 @@ public class Reservation  {
         this.pricePaid += amount;
     }
 
-    public void addParticipant(ReservationParticipant participant) {
+    public void addParticipant(ReservationParticipantEntity participant) {
         this.participants.add(participant);
         participant.setReservation(this);
     }
 
-    public boolean isOwner(Integer userId) {
-        return this.user.getId().equals(userId);
+    public void addReservationRoom(ReservationRoomEntity reservationRoom) {
+        this.reservationRooms.add(reservationRoom);
+    }
+
+    public boolean isOwner(Integer customerId) {
+        return this.customer.getId().equals(customerId);
     }
 
     public boolean hasParticipant(String email) {
@@ -94,16 +97,27 @@ public class Reservation  {
                 .anyMatch(p -> p.getUserEmail().equals(email));
     }
 
-    public ReservationDetailResponse toDetailResponse(Integer currentUserId) {
-        boolean isOwner = this.isOwner(currentUserId);
+    public HotelEntity getHotel() {
+        return reservationRooms.isEmpty() ? null :
+                reservationRooms.get(0).getRoom().getHotel();
+    }
+
+    public String getHotelName() {
+        HotelEntity hotel = getHotel();
+        return hotel != null ? hotel.getName() : null;
+    }
+
+    public ReservationDetailResponse toDetailResponse(Integer currentCustomerId) {
+        boolean isOwner = this.isOwner(currentCustomerId);
+        HotelEntity hotel = getHotel();
 
         return ReservationDetailResponse.builder()
                 .reservationId(this.reservationId)
                 .reservationNumber(this.reservationNumber)
                 .hotel(ReservationDetailResponse.HotelInfo.builder()
-                        .hotelId(this.hotel.getHotelId().intValue())
-                        .name(this.hotel.getName())
-                        .address(this.hotel.getAddress())
+                        .hotelId(hotel != null ? hotel.getHotelId() : null)
+                        .name(hotel != null ? hotel.getName() : null)
+                        .address(hotel != null ? hotel.getAddress() : null)
                         .build())
                 .checkInDate(this.checkInDate)
                 .checkOutDate(this.checkOutDate)
@@ -112,22 +126,32 @@ public class Reservation  {
                 .status(this.status.name())
                 .isOwner(isOwner)
                 .owner(ReservationDetailResponse.OwnerInfo.builder()
-                        .userId(this.user.getId().intValue())
-                        .email(this.user.getEmail())
+                        .userId(this.customer.getId())
+                        .email(this.customer.getUser().getEmail())
                         .build())
                 .participants(this.participants.stream()
-                        .map(ReservationParticipant::toParticipantInfo)
+                        .map(ReservationParticipantEntity::toParticipantInfo)
+                        .toList())
+                .rooms(this.reservationRooms.stream()
+                        .map(rr -> RoomDetailDto.builder()
+                                .roomId(rr.getRoom().getId())
+                                .roomType(rr.getRoom().getRoomType())
+                                .quantity(rr.getQuantity())
+                                .pricePerNight(rr.getPricePerNight())
+                                .nights(rr.getNights())
+                                .subtotalPrice(rr.getSubtotalPrice())
+                                .build())
                         .toList())
                 .build();
     }
 
-    public ReservationListResponse toListResponse(Integer currentUserId) {
-        boolean isOwner = this.isOwner(currentUserId);
+    public ReservationListResponse toListResponse(Integer currentCustomerId) {
+        boolean isOwner = this.isOwner(currentCustomerId);
 
         return ReservationListResponse.builder()
                 .reservationId(this.reservationId)
                 .reservationNumber(this.reservationNumber)
-                .hotelName(this.hotel.getName())
+                .hotelName(getHotelName())
                 .checkInDate(this.checkInDate)
                 .checkOutDate(this.checkOutDate)
                 .totalPrice(this.totalPrice)

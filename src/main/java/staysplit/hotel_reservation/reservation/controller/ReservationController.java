@@ -7,7 +7,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import staysplit.hotel_reservation.common.entity.Response;
-import staysplit.hotel_reservation.reservation.domain.entity.Reservation;
+import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
+import staysplit.hotel_reservation.customer.repository.CustomerRepository;
+import staysplit.hotel_reservation.reservation.domain.entity.ReservationEntity;
 import staysplit.hotel_reservation.reservation.domain.dto.reqeust.CreateReservationRequest;
 import staysplit.hotel_reservation.reservation.domain.dto.response.ReservationDetailResponse;
 import staysplit.hotel_reservation.reservation.domain.dto.response.ReservationListResponse;
@@ -26,6 +28,7 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
 
     @GetMapping("/list")
     public Response<Page<ReservationListResponse>> getReservationList(
@@ -64,7 +67,7 @@ public class ReservationController {
             @RequestBody CreateReservationRequest request,
             Authentication authentication) {
 
-        String reservationKey = reservationService.createTempReservation(request, getUserId(authentication));
+        String reservationKey = reservationService.createTempReservation(request, getCustomerId(authentication));
 
         return Response.success(Map.of("reservationKey", reservationKey));
     }
@@ -74,18 +77,21 @@ public class ReservationController {
             @PathVariable String merchantPayKey,
             Authentication authentication) {
 
-        Reservation reservation = reservationService.saveReserveAfterPayment(merchantPayKey);
-        ReservationDetailResponse response = reservation.toDetailResponse(getUserId(authentication));
+        ReservationEntity reservation = reservationService.saveReserveAfterPayment(merchantPayKey);
+        ReservationDetailResponse response = reservation.toDetailResponse(getCustomerId(authentication));
 
         return Response.success(response);
     }
 
-    private Integer getUserId(Authentication authentication) {
+    private Integer getCustomerId(Authentication authentication) {
         String email = authentication.getName();
 
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "사용자를 찾을 수 없습니다."));
 
-        return user.getId();
+        CustomerEntity customer = customerRepository.findByUser(user)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, "고객 정보를 찾을 수 없습니다."));
+
+        return customer.getId();
     }
 }
