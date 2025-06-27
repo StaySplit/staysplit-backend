@@ -5,7 +5,7 @@ import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import java.time.LocalDate;
 
 public record CustomerDetailsResponse(
-        Long id,
+        Integer id,
         String email,
         String name,
         LocalDate birthdate,

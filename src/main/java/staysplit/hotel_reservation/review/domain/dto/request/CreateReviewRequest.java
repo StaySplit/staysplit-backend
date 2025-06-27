@@ -1,10 +1,10 @@
 package staysplit.hotel_reservation.review.domain.dto.request;
 
 public record CreateReviewRequest(
-   Long id,
-   Long customerId,
+   Integer id,
+   Integer userId,
    String nickname,
-   Long hotelId,
+   Integer hotelId,
    String content,
    Integer rating
 ) {}

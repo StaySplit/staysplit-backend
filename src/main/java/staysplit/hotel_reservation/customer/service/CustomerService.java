@@ -60,7 +60,7 @@ public class CustomerService {
         return CustomerDetailsResponse.from(customer);
     }
 
-    public CustomerDetailsResponse findCustomerById(Long id) {
+    public CustomerDetailsResponse findCustomerById(Integer id) {
         CustomerEntity customer = validateCustomer(id);
         return CustomerDetailsResponse.from(customer);
     }
@@ -89,7 +89,7 @@ public class CustomerService {
         customerRepository.delete(customer);
     }
 
-    private CustomerEntity validateCustomer(Long id) {
+    private CustomerEntity validateCustomer(Integer id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
     }

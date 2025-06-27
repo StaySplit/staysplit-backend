@@ -9,6 +9,5 @@ public record UpdateHotelRequest(
         BigDecimal latitude,
         String description,
         Integer starLevel,
-        Double rating,
-        String imageUrl
+        Double rating
 ) {}

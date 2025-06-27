@@ -38,7 +38,6 @@ public class HotelService {
                 .description(request.description())
                 .starLevel(request.starLevel())
                 .rating(request.rating())
-                .imageUrl(request.imageUrl())
                 .build();
 
         provider.addHotel(hotel);
@@ -48,7 +47,7 @@ public class HotelService {
     }
 
     @Transactional(readOnly = true)
-    public GetHotelDetailResponse getHotelDetails(Long hotelId) {
+    public GetHotelDetailResponse getHotelDetails(Integer hotelId) {
         HotelEntity hotel = getHotelOrThrow(hotelId);
         return GetHotelDetailResponse.toDto(hotel);
     }
@@ -60,7 +59,7 @@ public class HotelService {
         return hotelPage.map(GetHotelListResponse::toDto);
     }
 
-    public GetHotelDetailResponse updateHotel(Long hotelId, UpdateHotelRequest request, String providerEmail) {
+    public GetHotelDetailResponse updateHotel(Integer hotelId, UpdateHotelRequest request, String providerEmail) {
         ProviderEntity provider = validateProvider(providerEmail);
         HotelEntity hotel = getHotelOrThrow(hotelId);
 
@@ -70,7 +69,7 @@ public class HotelService {
         return GetHotelDetailResponse.toDto(hotel);
     }
 
-    public DeleteHotelResponse deleteHotel(Long hotelId, String email) {
+    public DeleteHotelResponse deleteHotel(Integer hotelId, String email) {
         ProviderEntity provider = validateProvider(email);
         HotelEntity hotel = getHotelOrThrow(hotelId);
 
@@ -86,7 +85,7 @@ public class HotelService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
     }
 
-    private HotelEntity getHotelOrThrow(Long hotelId) {
+    private HotelEntity getHotelOrThrow(Integer hotelId) {
         return hotelRepository.findByHotelId(hotelId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "호텔을 찾을 수 없습니다."));
     }

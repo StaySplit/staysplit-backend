@@ -8,7 +8,7 @@ import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import java.util.Optional;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<CustomerEntity, Long> {
+public interface CustomerRepository extends JpaRepository<CustomerEntity, Integer> {
     Optional<CustomerEntity> findByUser(UserEntity user);
     boolean existsByNickname(String nickname);
 

@@ -28,26 +28,26 @@ public class ReviewController {
         return Response.success(response);
     }
 
-    @GetMapping("/customers/{customerId}")
-    public Response<Page<GetReviewResponse>> getReviewByCustomerId(@PathVariable Long customerId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<GetReviewResponse> review = reviewService.getReviewByCustomerId(customerId, pageable);
+    @GetMapping("/users/{userId}")
+    public Response<Page<GetReviewResponse>> getReviewByUserId(@PathVariable Integer userId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<GetReviewResponse> review = reviewService.getReviewByUserId(userId, pageable);
         return Response.success(review);
     }
 
     @GetMapping("/hotels/{hotelId}")
-    public Response<Page<GetReviewResponse>> getReviewByHotelId(@PathVariable Long hotelId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
+    public Response<Page<GetReviewResponse>> getReviewByHotelId(@PathVariable Integer hotelId, @PageableDefault(size = 10, sort = "reviewId", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<GetReviewResponse> review = reviewService.getReviewByHotelId(hotelId, pageable);
         return Response.success(review);
     }
 
     @DeleteMapping("/{reviewId}")
-    public Response<String> deleteReview(@RequestParam Long customerId, @PathVariable Long reviewId) {
+    public Response<String> deleteReview(@RequestParam Integer customerId, @PathVariable Integer reviewId) {
         reviewService.deleteReview(customerId, reviewId);
         return Response.success("리뷰가 삭제되었습니다.");
     }
 
     @PutMapping("/{reviewId}")
-    public Response<String> modifyReview( @PathVariable Long reviewId, @RequestBody ModifyReviewRequest request) {
+    public Response<String> modifyReview( @PathVariable Integer reviewId, @RequestBody ModifyReviewRequest request) {
         reviewService.modifyReview(reviewId, request);
         return Response.success("리뷰가 수정되었습니다.");
     }

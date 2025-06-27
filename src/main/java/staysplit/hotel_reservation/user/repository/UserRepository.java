@@ -7,7 +7,7 @@ import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     boolean existsByEmail(String email);
     Optional<UserEntity> findBySocialId(String socialId);
     Optional<UserEntity> findByEmail(String email);

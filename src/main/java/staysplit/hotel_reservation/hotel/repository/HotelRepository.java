@@ -11,10 +11,10 @@ import java.util.Optional;
 
 
 @Repository
-public interface HotelRepository extends JpaRepository<HotelEntity, Long> {
+public interface HotelRepository extends JpaRepository<HotelEntity, Integer> {
 
-    Optional<HotelEntity> findByHotelId(Long hotelId);
-    Page<HotelEntity> findAllByHotelId(Long hotelId, Pageable pageable);
+    Optional<HotelEntity> findByHotelId(Integer hotelId);
+    Page<HotelEntity> findAllByHotelId(Integer hotelId, Pageable pageable);
 
 
 }

@@ -3,7 +3,7 @@ package staysplit.hotel_reservation.room.domain.dto.response;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
 
 public record RoomInfoResponse(
-        Long hotelId,
+        Integer hotelId,
         String hotelName,
         String roomType,
         Integer maxOccupancy,

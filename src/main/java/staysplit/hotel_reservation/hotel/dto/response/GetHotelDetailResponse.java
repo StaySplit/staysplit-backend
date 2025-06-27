@@ -5,7 +5,7 @@ import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import java.math.BigDecimal;
 
 public record GetHotelDetailResponse(
-        Long hotelId,
+        Integer hotelId,
         String name,
         String address,
         BigDecimal longitude,
@@ -13,8 +13,7 @@ public record GetHotelDetailResponse(
         String description,
         Integer starLevel,
         double rating,
-        Integer reviewCount,
-        String imageUrl
+        Integer reviewCount
 ) {
     public static GetHotelDetailResponse toDto(HotelEntity hotel) {
         return new GetHotelDetailResponse(
@@ -26,8 +25,7 @@ public record GetHotelDetailResponse(
                 hotel.getDescription(),
                 hotel.getStarLevel(),
                 hotel.getRating(),
-                hotel.getReviewCount(),
-                hotel.getImageUrl()
+                hotel.getReviewCount()
         );
     }
 }
