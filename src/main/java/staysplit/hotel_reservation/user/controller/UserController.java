@@ -33,4 +33,10 @@ public class UserController {
         String response = userService.changePassword(request, authentication.getName());
         return Response.success(response);
     }
+
+    @DeleteMapping
+    public Response<String> deleteUser(Authentication authentication) {
+        userService.deleteUser(authentication.getName());
+        return Response.success("회원 탈퇴가 완료되었습니다.");
+    }
 }

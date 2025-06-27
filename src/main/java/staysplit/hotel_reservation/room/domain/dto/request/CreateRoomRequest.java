@@ -16,6 +16,10 @@ public record CreateRoomRequest(
         @NotBlank(message = "객실 타입을 입력해 주세요.")
         String roomType,
 
+        @NotNull(message = "수량을 입력해 주세요")
+        @Min(value = 1, message = "수량은 1보다 커야 합니다.")
+        Integer quantity,
+
         @NotNull(message = "가격을 입력해 주세요.")
         @Positive(message = "가격은 0보다 커야 합니다.")
         Integer price,

@@ -15,13 +15,19 @@ public enum ErrorCode {
     ADDITIONAL_INFO_REQUIRED(HttpStatus.UNAUTHORIZED, "추가 정보 입력이 필요합니다."),
     DUPLICATE_SOCIAL_ID(HttpStatus.CONFLICT, "이미 가입된 계정입니다."),
     PROVIDER_ALREADY_REGISTERED(HttpStatus.CONFLICT, "이미 존재하는 공급자입니다"),
+    UNAUTHORIZED_CUSTOMER(HttpStatus.UNAUTHORIZED, "사용자가 권한이 없습니다"),
 
     // Room
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 방입니다"),
     UNAUTHORIZED_PROVIDER(HttpStatus.UNAUTHORIZED, "이 방에 대한 권한이 없습니다"),
+    ROOM_ALREADY_IN_CART(HttpStatus.CONFLICT, "이미 장바구니에 담기 방입니다"),
 
     // Hotel
     HOTEL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 호텔입니다"),
+
+    // Cart
+    CART_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장바구니 입니다"),
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "징바구니에 존재하지 않는 상품입니다");
 
     // Review
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),

@@ -40,6 +40,11 @@ public class UserService {
         return "비밀번호가 변경되었습니다.";
     }
 
+    public void deleteUser(String email) {
+        UserEntity user = validateUser(email);
+        userRepository.delete(user);
+    }
+
     private UserEntity validateUser(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND,

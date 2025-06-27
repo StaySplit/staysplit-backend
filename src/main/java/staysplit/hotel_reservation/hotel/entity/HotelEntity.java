@@ -21,7 +21,9 @@ public class HotelEntity {
     @JoinColumn(name = "provider_id", nullable = false)
     private ProviderEntity provider;
 
+    @Column(nullable = false)
     private String name;  //호텔 이름
+    @Column(nullable = false)
     private String address; //호텔 주소
     private BigDecimal longitude; //경도
     private BigDecimal latitude; //위도

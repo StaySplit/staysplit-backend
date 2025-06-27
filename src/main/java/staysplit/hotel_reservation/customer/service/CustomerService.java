@@ -1,6 +1,8 @@
 package staysplit.hotel_reservation.customer.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,9 +86,15 @@ public class CustomerService {
 //        return CustomerInfoResponse.from(customer);
 //    }
 
+
     public void delete(String email) {
         CustomerEntity customer = validateCustomer(email);
         customerRepository.delete(customer);
+    }
+
+    public Page<CustomerDetailsResponse> getAllCustomers(Pageable pageable) {
+        Page<CustomerEntity> all = customerRepository.findAll(pageable);
+        return all.map(CustomerDetailsResponse::from);
     }
 
     private CustomerEntity validateCustomer(Long id) {
@@ -101,8 +109,6 @@ public class CustomerService {
         return customerRepository.findByUser(user)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
 
-//        return customerRepository.findByEmail(email)
-//                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
     }
 
 }

@@ -15,7 +15,7 @@ import staysplit.hotel_reservation.room.domain.RoomEntity;
 import staysplit.hotel_reservation.room.domain.dto.request.CreateRoomRequest;
 import staysplit.hotel_reservation.room.domain.dto.request.UpdateRoomRequest;
 import staysplit.hotel_reservation.room.domain.dto.response.RoomDeleteResponse;
-import staysplit.hotel_reservation.room.domain.dto.response.RoomInfoResponse;
+import staysplit.hotel_reservation.room.domain.dto.response.RoomDetailResponse;
 import staysplit.hotel_reservation.room.repository.RoomRepository;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.repository.UserRepository;
@@ -30,13 +30,14 @@ public class RoomService {
     private final UserRepository userRepository;
     private final HotelRepository hotelRepository;
 
-    public RoomInfoResponse createRoom(String email, CreateRoomRequest request) {
+    public RoomDetailResponse createRoom(String email, CreateRoomRequest request) {
         ProviderEntity provider = validateProvider(email);
 
         RoomEntity room = RoomEntity.builder()
                 .hotel(provider.getHotel())
                 .photoUrl(request.photoUrl())
                 .roomType(request.roomType())
+                .quantity(request.quantity())
                 .price(request.price())
                 .description(request.description())
                 .maxOccupancy(request.occupancy())
@@ -45,11 +46,11 @@ public class RoomService {
 
         roomRepository.save(room);
         providerRepository.save(provider);
-        return RoomInfoResponse.from(room);
+        return RoomDetailResponse.from(room);
     }
 
-    public RoomInfoResponse updateRoom(String email, UpdateRoomRequest request) {
-        RoomEntity room = validateRoom(request.roomId());
+    public RoomDetailResponse updateRoom(String email, Long roomId, UpdateRoomRequest request) {
+        RoomEntity room = validateRoom(roomId);
         ProviderEntity provider = validateProvider(email);
         if (!hasAuthority(provider, room)) {
             throw new AppException(ErrorCode.UNAUTHORIZED_PROVIDER,
@@ -57,9 +58,9 @@ public class RoomService {
         }
 
         room.updateRoom(request.roomType(), request.photoUrl(), request.maxOccupancy(),
-                request.price(), request.description());
+                request.price(), request.description(), request.quantity());
 
-        return RoomInfoResponse.from(room);
+        return RoomDetailResponse.from(room);
     }
 
     public RoomDeleteResponse deleteRoom(String email, Long roomId) {
@@ -74,19 +75,19 @@ public class RoomService {
 
         return response;
     }
-
+    
 
     @Transactional(readOnly = true)
-    public RoomInfoResponse findRoomById(Long roomId) {
+    public RoomDetailResponse findRoomById(Long roomId) {
         RoomEntity room = validateRoom(roomId);
-        return RoomInfoResponse.from(room);
+        return RoomDetailResponse.from(room);
     }
 
     @Transactional(readOnly = true)
-    public Page<RoomInfoResponse> findAllRoomsByHotel(Long hotelId, Pageable pageable) {
+    public Page<RoomDetailResponse> findAllRoomsByHotel(Long hotelId, Pageable pageable) {
         HotelEntity hotel = validateHotelById(hotelId);
         Page<RoomEntity> hotels = roomRepository.findByHotel_HotelId(hotelId, pageable);
-        return hotels.map(RoomInfoResponse::from);
+        return hotels.map(RoomDetailResponse::from);
     }
 
 
