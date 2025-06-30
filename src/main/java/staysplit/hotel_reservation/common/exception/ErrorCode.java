@@ -25,7 +25,16 @@ public enum ErrorCode {
 
     // Review
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
-    UNAUTHORIZED_REVIEWER(HttpStatus.UNAUTHORIZED, "리뷰 작성자가 아닙니다.");
+    UNAUTHORIZED_REVIEWER(HttpStatus.UNAUTHORIZED, "리뷰 작성자가 아닙니다."),
+
+    // Payment
+    DUPLICATE_PAYMENT(HttpStatus.CONFLICT, "이미 처리된 결제입니다."),
+    INVALID_PAYMENT(HttpStatus.BAD_REQUEST, "결제 정보를 찾을 수 없습니다."),
+    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "결제 금액이 일치하지 않습니다."),
+    INVALID_PAYMENT_STATUS(HttpStatus.BAD_REQUEST, "결제가 완료되지 않았습니다."),
+
+    // Reservation
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약을 찾을 수 없습니다.");
 
     private HttpStatus httpStatus;
     private String message;
