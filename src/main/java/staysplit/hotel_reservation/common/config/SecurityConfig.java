@@ -27,7 +27,7 @@ public class SecurityConfig {
             "/api/providers/sign-up",
             "/api/users/login",
             "/api/rooms/hotels/*",
-
+            "/api/reviews/**",
     };
 
     private final String[] PUBLIC_GET_ENDPOINTS = {
@@ -35,13 +35,14 @@ public class SecurityConfig {
             "/api/hotels",
             "/api/hotels/**",
             "/api/rooms/*",
+            "/api/reviews/**",
     };
 
     private final String[] OAUTH_ENDPOINTS  = {
             "/oauth2/authorization/google",
-            "/login/oauth2/code/google",
+            "/login/oauth2/code/**",
             "/api/customers/google/login",
-            "/oauth/**"
+            "/oauth/**",
     };
 
     @Bean

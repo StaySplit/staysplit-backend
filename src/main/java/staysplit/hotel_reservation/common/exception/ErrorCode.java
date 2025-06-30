@@ -33,6 +33,10 @@ public enum ErrorCode {
     PHOTO_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사진입니다."),
     INVALID_PHOTO_TYPE(HttpStatus.UNAUTHORIZED, "associatedEntity로 room 이나 hotel 중 하나를 입력해주세요.");
 
+    // Review
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
+    UNAUTHORIZED_REVIEWER(HttpStatus.UNAUTHORIZED, "리뷰 작성자가 아닙니다.");
+
     private HttpStatus httpStatus;
     private String message;
 
