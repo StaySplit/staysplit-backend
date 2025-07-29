@@ -10,6 +10,9 @@ pipeline {
             }
         }
         stage('Build') {
+            when {
+                branch 'main'
+            }
             steps {
                 sh './gradlew build' // 또는 'mvn clean install'
             }
