@@ -112,6 +112,5 @@ public class CustomerController {
     public Response<CustomerDetailsResponse> oauthSignup(@RequestBody OauthSignupRequest request) {
         CustomerDetailsResponse response = oAuthService.oauthSignup(request);
 
-        return Response.success(response);
     }
 }
