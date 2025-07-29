@@ -20,4 +20,13 @@ pipeline {
             }
         }
     }
+    post {
+        failure {
+          // 빌드 실패 시 GitHub에 상태 보고
+          githubNotify context: 'jenkins/pr-check', status: 'FAILURE'
+        }
+        success {
+          githubNotify context: 'jenkins/pr-check', status: 'SUCCESS'
+        }
+    }
 }
