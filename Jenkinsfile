@@ -22,11 +22,13 @@ pipeline {
     }
     post {
         failure {
-          // 빌드 실패 시 GitHub에 상태 보고
-          githubNotify context: 'jenkins/pr-check', status: 'FAILURE'
+            // 빌드 실패 시 GitHub에 상태 보고
+            githubNotify context: 'jenkins/pr-check', status: 'FAILURE'
+            githubNotify context: 'CI/Jenkins', status: 'FAILURE'
         }
         success {
-          githubNotify context: 'jenkins/pr-check', status: 'SUCCESS'
+            githubNotify context: 'jenkins/pr-check', status: 'SUCCESS'
+            githubNotify context: 'CI/Jenkins', status: 'SUCCESS'
         }
     }
 }
