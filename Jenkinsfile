@@ -6,13 +6,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/StaySplit/staysplit-backend.git', branch: 'main'
+                checkout scm // 동적으로 현재 PR 브랜치 checkout
             }
         }
         stage('Build') {
-            when {
-                branch 'main'
-            }
             steps {
                 sh './gradlew build' // 또는 'mvn clean install'
             }
