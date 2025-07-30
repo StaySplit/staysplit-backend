@@ -22,13 +22,39 @@ pipeline {
     }
     post {
         failure {
-            // 빌드 실패 시 GitHub에 상태 보고
-            githubNotify context: 'jenkins/pr-check', status: 'FAILURE'
-            githubNotify context: 'CI/Jenkins', status: 'FAILURE'
+            script {
+                if (env.CHANGE_ID) {
+                    githubNotify context: 'jenkins/pr-check', 
+                                status: 'FAILURE', 
+                                description: 'PR 검증이 실패했습니다. 로그를 확인해주세요.',
+                                targetUrl: env.BUILD_URL
+                    
+                    githubNotify context: 'CI/Jenkins', 
+                                status: 'FAILURE', 
+                                description: 'Jenkins CI 빌드가 실패했습니다.',
+                                targetUrl: env.BUILD_URL
+                }
+            }
         }
+        
         success {
-            githubNotify context: 'jenkins/pr-check', status: 'SUCCESS'
-            githubNotify context: 'CI/Jenkins', status: 'SUCCESS'
+            script {
+                if (env.CHANGE_ID) {
+                    githubNotify context: 'jenkins/pr-check', 
+                                status: 'SUCCESS', 
+                                description: 'PR 검증이 성공적으로 완료되었습니다.',
+                                targetUrl: env.BUILD_URL
+                    
+                    githubNotify context: 'CI/Jenkins', 
+                                status: 'SUCCESS', 
+                                description: 'Jenkins CI 빌드가 성공했습니다.',
+                                targetUrl: env.BUILD_URL
+                }
+            }
+        }
+        
+        always {
+            echo "파이프라인이 완료되었습니다."
         }
     }
 }
