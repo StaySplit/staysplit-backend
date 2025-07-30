@@ -24,11 +24,11 @@ pipeline {
         }
         stage('Create Config') {
           steps {
-            script {
-              def fixedContent = env.APPLICATION_YML_CONTENT.replaceAll(/\r\n/, '\n')
-              writeFile file: 'src/main/resources/application.yml', text: fixedContent
+            // Credentials > Secret file 타입 ID가 'application_yml_file' 인 경우
+            withCredentials([file(credentialsId: 'application_yml_file', variable: 'APP_YML_FILE')]) {
+              bat 'copy %APP_YML_FILE% src\\main\\resources\\application.yml'
+              bat 'type src\\main\\resources\\application.yml'
             }
-            bat 'type src\\main\\resources\\application.yml'
           }
         }
         stage('Build') {
