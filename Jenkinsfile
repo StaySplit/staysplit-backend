@@ -3,9 +3,6 @@ pipeline {
     tools {
         jdk 'jdk17'
     }
-    environment {
-        APPLICATION_YML_CONTENT = credentials('APPLICATION_YML_CONTENT')
-    }
     stages {
         stage('Checkout') {
             steps {
