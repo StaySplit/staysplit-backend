@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Copy keystore') {
             steps {
-                bat 'cp /keystore.p12 src/main/resources/keystore.p12'
+                bat 'copy /Y ./keystore.p12 src/main/resources/keystore.p12'
             }
         }
         stage('Create Config') {
