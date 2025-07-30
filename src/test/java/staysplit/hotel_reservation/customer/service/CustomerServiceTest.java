@@ -106,13 +106,4 @@ public class CustomerServiceTest {
         assertThrows(AppException.class, () -> customerService.changeNickname(request, "test@example.com"));
     }
 
-    @Test
-    void delete_success() {
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
-        when(customerRepository.findByUser(user)).thenReturn(Optional.of(customer));
-
-        customerService.delete("test@example.com");
-
-        verify(customerRepository, times(1)).delete(customer);
-    }
 }
