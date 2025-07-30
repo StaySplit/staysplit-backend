@@ -20,11 +20,11 @@ pipeline {
                 bat 'if not exist uploads mkdir uploads'
             }
         }
-        stage('Copy keystore') {
-            steps {
-                bat ' copy /Y keystore.p12 src\\main\\resources\\keystore.p12'
-            }
-        }
+//        stage('Copy keystore') {
+//            steps {
+//                bat ' copy /Y keystore.p12 src\\main\\resources\\keystore.p12'
+//            }
+//        }
         stage('Create Config') {
           steps {
             withCredentials([file(credentialsId: 'APPLICATION_YML_CONTENT', variable: 'APP_YML_FILE')]) {
