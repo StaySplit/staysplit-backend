@@ -29,6 +29,7 @@ pipeline {
                     echo %YML_BASE64% > temp.b64
                     certutil -decode temp.b64 src\\main\\resources\\application.yml
                   '''
+                }
             }
         }
         stage('Build') {
