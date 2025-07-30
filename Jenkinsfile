@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Copy keystore') {
             steps {
-                bat 'cp C:\Program Files\Jenkins/keystore.p12 src/main/resources/keystore.p12'
+                bat 'cp /keystore.p12 src/main/resources/keystore.p12'
             }
         }
         stage('Create Config') {
