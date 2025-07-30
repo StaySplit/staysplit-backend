@@ -24,8 +24,10 @@ pipeline {
         }
         stage('Create Config') {
           steps {
-            writeFile file: 'src/main/resources/application.yml', text: env.APPLICATION_YML_CONTENT
-            bat 'type src\\main\\resources\\application.yml' 
+            withCredentials([file(credentialsId: 'APPLICATION_YML_CONTENT', variable: 'APP_YML_FILE')]) {
+                  bat 'copy %APP_YML_FILE% src\\main\\resources\\application.yml'
+                  bat 'type src\\main\\resources\\application.yml'
+            }
           }
         }
         stage('Build') {
