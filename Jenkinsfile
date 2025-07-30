@@ -24,8 +24,7 @@ pipeline {
         }
         stage('Create Config') {
           steps {
-            // Credentials > Secret file 타입 ID가 'application_yml_file' 인 경우
-            withCredentials([file(credentialsId: 'application_yml_file', variable: 'APP_YML_FILE')]) {
+            withCredentials([file(credentialsId: 'application_yml_file', variable: 'APPLICATION_YML_CONTENT')]) {
               bat 'copy %APP_YML_FILE% src\\main\\resources\\application.yml'
               bat 'type src\\main\\resources\\application.yml'
             }
