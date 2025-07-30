@@ -1,5 +1,11 @@
 pipeline {
     agent any
+    when {
+        anyOf {
+            branch 'main'
+            changeRequest()
+        }
+    }
     tools {
         jdk 'jdk17'
     }
