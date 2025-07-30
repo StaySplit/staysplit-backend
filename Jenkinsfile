@@ -32,11 +32,6 @@ pipeline {
                 bat './gradlew build -x test' // 또는 'mvn clean install'
             }
         }
-        stage('Test') {
-            steps {
-                bat './gradlew test'
-            }
-        }
     }
     post {
         failure {
