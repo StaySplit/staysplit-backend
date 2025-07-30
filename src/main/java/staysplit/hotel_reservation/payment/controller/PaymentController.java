@@ -10,7 +10,6 @@ import staysplit.hotel_reservation.payment.domain.dto.response.ErrorResponse;
 import staysplit.hotel_reservation.payment.service.PaymentService;
 import staysplit.hotel_reservation.common.entity.Response;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
