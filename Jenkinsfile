@@ -29,7 +29,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                bat './gradlew build' // 또는 'mvn clean install'
+                bat './gradlew build -x test' // 또는 'mvn clean install'
             }
         }
         stage('Test') {
