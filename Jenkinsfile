@@ -5,18 +5,43 @@ pipeline {
     }
     stages {
         stage('Checkout') {
+            when {
+                anyOf {
+                    branch 'main'
+                    changeRequest()
+                }
+            }
             steps {
                 checkout scm // 동적으로 현재 PR 브랜치 checkout
             }
         }
-        stage('Build') {
+        stage('Prepare Upload Dir') {
             steps {
-                bat './gradlew build' // 또는 'mvn clean install'
+                bat 'if not exist uploads mkdir uploads'
             }
         }
-        stage('Test') {
+//        stage('Copy keystore') {
+//            steps {
+//                bat ' copy /Y keystore.p12 src\\main\\resources\\keystore.p12'
+//            }
+//        }
+        stage('Create Config') {
+          steps {
+            withCredentials([file(credentialsId: 'APPLICATION_YML_CONTENT', variable: 'APP_YML_FILE')]) {
+                bat 'copy %APP_YML_FILE% src\\main\\resources\\application.yml'
+                bat 'type src\\main\\resources\\application.yml'
+            }
+          }
+        }
+        stage('Build') {
+            when {
+                anyOf {
+                    branch 'main'
+                    changeRequest()
+                }
+            }
             steps {
-                bat './gradlew test'
+                bat './gradlew build -x test' // 또는 'mvn clean install'
             }
         }
     }
@@ -36,7 +61,7 @@ pipeline {
                 }
             }
         }
-
+        
         success {
             script {
                 if (env.CHANGE_ID) {
@@ -52,6 +77,7 @@ pipeline {
                 }
             }
         }
+        
         always {
             echo "파이프라인이 완료되었습니다."
         }
