@@ -24,7 +24,11 @@ pipeline {
         }
         stage('Create Config') {
             steps {
-                writeFile file: 'src/main/resources/application.yml', text: "${env.APPLICATION_YML_CONTENT}"
+                withCredentials([string(credentialsId: 'application_yml_base64', variable: 'YML_BASE64')]) {
+                  bat '''
+                    echo %YML_BASE64% > temp.b64
+                    certutil -decode temp.b64 src\\main\\resources\\application.yml
+                  '''
             }
         }
         stage('Build') {
