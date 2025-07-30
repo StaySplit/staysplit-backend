@@ -23,12 +23,13 @@ pipeline {
             }
         }
         stage('Create Config') {
-            steps {
-                script {
-                    writeFile file: 'src/main/resources/application.yml', text: env.APPLICATION_YML_CONTENT
-                }
-                bat 'type src\\main\\resources\\application.yml'
+          steps {
+            script {
+              def fixedContent = env.APPLICATION_YML_CONTENT.replaceAll(/\r\n/, '\n')
+              writeFile file: 'src/main/resources/application.yml', text: fixedContent
             }
+            bat 'type src\\main\\resources\\application.yml'
+          }
         }
         stage('Build') {
             steps {
