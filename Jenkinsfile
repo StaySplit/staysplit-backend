@@ -9,6 +9,11 @@ pipeline {
                 checkout scm // 동적으로 현재 PR 브랜치 checkout
             }
         }
+        stage('Create Config') {
+            steps {
+                writeFile file: 'src/main/resources/application.yml', text: "${env.APPLICATION_YML_CONTENT}"
+            }
+        }
         stage('Build') {
             steps {
                 bat './gradlew build' // 또는 'mvn clean install'
