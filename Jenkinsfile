@@ -1,16 +1,16 @@
 pipeline {
     agent any
-    when {
-        anyOf {
-            branch 'main'
-            changeRequest()
-        }
-    }
     tools {
         jdk 'jdk17'
     }
     stages {
         stage('Checkout') {
+            when {
+                anyOf {
+                    branch 'main'
+                    changeRequest()
+                }
+            }
             steps {
                 checkout scm // 동적으로 현재 PR 브랜치 checkout
             }
@@ -34,6 +34,12 @@ pipeline {
           }
         }
         stage('Build') {
+            when {
+                anyOf {
+                    branch 'main'
+                    changeRequest()
+                }
+            }
             steps {
                 bat './gradlew build -x test' // 또는 'mvn clean install'
             }
