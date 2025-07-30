@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Create Config') {
             steps {
-                 bat 'type src\\main\\resources\\application.yml
+                 bat 'type src\\main\\resources\\application.yml'
                 }
             }
         }
