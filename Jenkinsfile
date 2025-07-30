@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Prepare Upload Dir') {
             steps {
-                bat 'mkdir uploads'
+                bat 'if not exist uploads mkdir uploads'
             }
         }
         stage('Copy keystore') {
