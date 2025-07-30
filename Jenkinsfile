@@ -6,27 +6,55 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/StaySplit/staysplit-backend.git', branch: 'main'
+                checkout scm // 동적으로 현재 PR 브랜치 checkout
             }
         }
         stage('Build') {
             steps {
-                sh './gradlew build' // 또는 'mvn clean install'
+                bat './gradlew build' // 또는 'mvn clean install'
             }
         }
         stage('Test') {
             steps {
-                sh './gradlew test'
+                bat './gradlew test'
             }
         }
     }
     post {
         failure {
-          // 빌드 실패 시 GitHub에 상태 보고
-          githubNotify context: 'jenkins/pr-check', status: 'FAILURE'
+            script {
+                if (env.CHANGE_ID) {
+                    githubNotify context: 'jenkins/pr-check',
+                                status: 'FAILURE',
+                                description: 'PR 검증이 실패했습니다. 로그를 확인해주세요.',
+                                targetUrl: env.BUILD_URL
+
+                    githubNotify context: 'CI/Jenkins',
+                                status: 'FAILURE',
+                                description: 'Jenkins CI 빌드가 실패했습니다.',
+                                targetUrl: env.BUILD_URL
+                }
+            }
         }
+
         success {
-          githubNotify context: 'jenkins/pr-check', status: 'SUCCESS'
+            script {
+                if (env.CHANGE_ID) {
+                    githubNotify context: 'jenkins/pr-check',
+                                status: 'SUCCESS',
+                                description: 'PR 검증이 성공적으로 완료되었습니다.',
+                                targetUrl: env.BUILD_URL
+
+                    githubNotify context: 'CI/Jenkins',
+                                status: 'SUCCESS',
+                                description: 'Jenkins CI 빌드가 성공했습니다.',
+                                targetUrl: env.BUILD_URL
+                }
+            }
+        }
+
+        always {
+            echo "파이프라인이 완료되었습니다."
         }
     }
 }

@@ -44,7 +44,7 @@ class ReviewServiceTest {
     void createReview_success() {
         CreateReviewRequest request = new CreateReviewRequest(1, 1, "홍길동", 10, "좋은 숙소입니다", 5);
         CustomerEntity customer = CustomerEntity.builder().id(1).nickname("홍길동").build();
-        HotelEntity hotel = HotelEntity.builder().hotelId(10).build();
+        HotelEntity hotel = HotelEntity.builder().id(10).build();
         ReviewEntity review = ReviewEntity.builder().customer(customer).hotel(hotel).content("좋은 숙소입니다").rating(5).build();
 
         when(reviewRepository.existsByUserIdAndHotelId(1, 10)).thenReturn(false);
