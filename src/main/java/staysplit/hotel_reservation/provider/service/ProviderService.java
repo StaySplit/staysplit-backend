@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
-import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.provider.domain.dto.reqeust.ProviderSignupRequest;
 import staysplit.hotel_reservation.provider.domain.dto.response.ProviderDetailResponse;
 import staysplit.hotel_reservation.provider.domain.dto.response.ProviderSignupResponse;
