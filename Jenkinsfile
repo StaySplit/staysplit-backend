@@ -12,6 +12,11 @@ pipeline {
                 checkout scm // 동적으로 현재 PR 브랜치 checkout
             }
         }
+        stage('Prepare Upload Dir') {
+            steps {
+                bat 'mkdir -p uploads'
+            }
+        }
         stage('Copy keystore') {
             steps {
                 bat 'cp C:\Program Files\Jenkins/keystore.p12 src/main/resources/keystore.p12'
