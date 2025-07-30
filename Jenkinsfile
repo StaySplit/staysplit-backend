@@ -24,7 +24,10 @@ pipeline {
         }
         stage('Create Config') {
             steps {
-                 bat 'type src\\main\\resources\\application.yml'
+                script {
+                    writeFile file: 'src/main/resources/application.yml', text: env.APPLICATION_YML_CONTENT
+                }
+                bat 'type src\\main\\resources\\application.yml'
             }
         }
         stage('Build') {
