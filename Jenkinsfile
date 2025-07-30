@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Prepare Upload Dir') {
             steps {
-                bat 'mkdir -p uploads'
+                bat 'mkdir uploads'
             }
         }
         stage('Copy keystore') {
