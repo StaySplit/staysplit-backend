@@ -11,12 +11,12 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh './gradlew build' // 또는 'mvn clean install'
+                bat './gradlew build' // 또는 'mvn clean install'
             }
         }
         stage('Test') {
             steps {
-                sh './gradlew test'
+                bat './gradlew test'
             }
         }
     }
