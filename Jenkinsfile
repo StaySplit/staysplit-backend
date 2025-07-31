@@ -60,8 +60,7 @@ pipeline {
                                 targetUrl: env.BUILD_URL
                 }
             }
-        }
-        
+        }        
         success {
             script {
                 if (env.CHANGE_ID) {
@@ -79,6 +78,14 @@ pipeline {
         }
         
         always {
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'reports',
+                reportFiles: 'index.html',
+                reportName: 'Test Report'
+            ])
             echo "파이프라인이 완료되었습니다."
         }
     }
