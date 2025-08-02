@@ -39,12 +39,11 @@ public class ReservationController {
         return Response.success(response);
     }
 
-    /*
     @PostMapping("/confirmation/{reservationId}")
     public Response<ReservationDetailResponse> confirmReservationAfterPayment(@PathVariable Integer reservationId) {
         ReservationDetailResponse response = reservationService.confirmReservationAfterPayment(reservationId);
         return Response.success(response);
-    }*/
+    }
 
     @PutMapping("/{reservationId}")
     public Response<String> cancelReservation(@PathVariable Integer reservationId, Authentication authentication) {
