@@ -15,5 +15,6 @@ public class OauthSignupRequest {
     private String name; // From Google OAUTH, 카카오는 사용자 입력
     private String nickname; // 사용자 입력값
     private LocalDate birthdate; // 사용자 입력값
+    private String accountType;
 
 }

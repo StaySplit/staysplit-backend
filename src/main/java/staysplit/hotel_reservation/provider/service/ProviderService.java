@@ -6,14 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
-import staysplit.hotel_reservation.hotel.repository.HotelRepository;
 import staysplit.hotel_reservation.provider.domain.dto.reqeust.ProviderSignupRequest;
 import staysplit.hotel_reservation.provider.domain.dto.response.ProviderDetailResponse;
 import staysplit.hotel_reservation.provider.domain.dto.response.ProviderSignupResponse;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
-import staysplit.hotel_reservation.user.domain.enums.LoginSource;
+import staysplit.hotel_reservation.user.domain.enums.AccountType;
 import staysplit.hotel_reservation.user.domain.enums.Role;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
@@ -35,7 +34,7 @@ public class ProviderService {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.PROVIDER)
-                .loginSource(LoginSource.LOCAL)
+                .account_type(AccountType.LOCAL)
                 .build();
 
         userRepository.save(user);

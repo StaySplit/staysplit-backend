@@ -1,11 +1,13 @@
 package staysplit.hotel_reservation.customer.controller;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import staysplit.hotel_reservation.common.entity.ResultWrapper;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.common.oauth.dto.OauthSignupRequest;
@@ -16,6 +18,7 @@ import staysplit.hotel_reservation.customer.domain.dto.request.NicknameChangeReq
 import staysplit.hotel_reservation.customer.domain.dto.request.CustomerSignupRequest;
 import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
 import staysplit.hotel_reservation.customer.service.CustomerService;
+import staysplit.hotel_reservation.user.domain.dto.response.UserLoginResponse;
 
 import java.io.IOException;
 
@@ -79,23 +82,26 @@ public class CustomerController {
     public Response<?> googleLogin( @RequestBody RedirectDto redirectDto, HttpServletResponse response) {
         try {
             // 기존 사용자라면 jwt 반환
-            String jwt = oAuthService.getGoogleUserInfo(redirectDto);
+            UserLoginResponse loginResponse = oAuthService.getGoogleUserInfo(redirectDto);
 
-            ResponseCookie cookie = ResponseCookie.from("token", jwt)
+            ResponseCookie cookie = ResponseCookie.from("token", loginResponse.jwt())
                     .httpOnly(true)
                     .secure(false)
                     .path("/")
                     .sameSite("Lax")
                     .maxAge(jwtExpirationInSeconds)
                     .build();
-
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-            return Response.success(jwt);
+            
+            return Response.success(
+                    new ResultWrapper<>("SUCCESS", "ROLE_" + loginResponse.role())
+            );
         } catch (AppException e) {
             // 신규 사용자라면 추가 정보 입력 필요
             if (e.getErrorCode() == ErrorCode.ADDITIONAL_INFO_REQUIRED) {
-                return Response.warn(ErrorCode.ADDITIONAL_INFO_REQUIRED, e.getMessage());
+                return Response.success(
+                        new ResultWrapper<>("ADDITIONAL_INFO_REQUIRED", e.getMessage())
+                );
             }
             throw e; //다른 에러는 그대로 전파
         }

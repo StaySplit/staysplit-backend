@@ -1,6 +1,6 @@
 package staysplit.hotel_reservation.user.domain.enums;
 
 
-public enum LoginSource {
+public enum AccountType {
     LOCAL, GOOGLE, KAKAO
 }

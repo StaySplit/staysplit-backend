@@ -2,8 +2,8 @@ package staysplit.hotel_reservation.customer.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import staysplit.hotel_reservation.customer.domain.dto.SocialType;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
+import staysplit.hotel_reservation.user.domain.enums.AccountType;
 
 import java.time.LocalDate;
 
@@ -35,7 +35,7 @@ public class CustomerEntity {
     private String nickname;
 
     @Enumerated(EnumType.STRING)
-    private SocialType socialType;
+    private AccountType account_type;
 
     private String socialId;
 }

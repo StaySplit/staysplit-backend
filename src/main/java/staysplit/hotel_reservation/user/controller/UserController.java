@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,11 +38,14 @@ public class UserController {
     public Response<String> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
         UserLoginResponse response = userService.login(loginRequest);
 
-        Cookie cookie = new Cookie("token", response.jwt());
-        cookie.setMaxAge(jwtExpirationInSeconds);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        httpServletResponse.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("token", response.jwt())
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(jwtExpirationInSeconds)
+                .build();
+        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return Response.success("ROLE_" + response.role());
     }
