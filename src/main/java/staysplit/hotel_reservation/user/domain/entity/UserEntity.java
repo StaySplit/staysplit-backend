@@ -3,7 +3,7 @@ package staysplit.hotel_reservation.user.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import staysplit.hotel_reservation.common.entity.BaseEntity;
-import staysplit.hotel_reservation.user.domain.enums.LoginSource;
+import staysplit.hotel_reservation.user.domain.enums.AccountType;
 import staysplit.hotel_reservation.user.domain.enums.Role;
 
 @Entity
@@ -26,8 +26,8 @@ public class UserEntity extends BaseEntity {
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "login_source", nullable = false)
-    private LoginSource loginSource;
+    @Column(name = "account_type", nullable = false)
+    private AccountType account_type;
 
     @Column(name = "social_id", unique = true)
     private String socialId;

@@ -1,6 +1,7 @@
 package staysplit.hotel_reservation.common.oauth.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,8 +12,9 @@ import staysplit.hotel_reservation.common.security.jwt.JwtTokenProvider;
 import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.repository.CustomerRepository;
+import staysplit.hotel_reservation.user.domain.dto.response.UserLoginResponse;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
-import staysplit.hotel_reservation.user.domain.enums.LoginSource;
+import staysplit.hotel_reservation.user.domain.enums.AccountType;
 import staysplit.hotel_reservation.user.domain.enums.Role;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
@@ -26,6 +28,7 @@ public class OAuthService {
     private final KakaoService kakaoService;
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
 
     // oauth로 회원가입
@@ -36,11 +39,18 @@ public class OAuthService {
         if (customerRepository.existsByNickname(request.getNickname())) {
             throw new AppException(ErrorCode.DUPLICATE_NICKNAME, ErrorCode.DUPLICATE_NICKNAME.getMessage());
         }
+        AccountType accountType;
+        try {
+            accountType = AccountType.valueOf(request.getAccountType().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new AppException(ErrorCode.INVALID_ACCOUNT_TYPE, ErrorCode.INVALID_ACCOUNT_TYPE.getMessage());
+        }
 
         UserEntity user = UserEntity.builder()
                 .email(request.getEmail())
                 .role(Role.CUSTOMER)
-                .loginSource(LoginSource.GOOGLE)
+                .password(passwordEncoder.encode(request.getSocialId()))
+                .account_type(accountType)
                 .socialId(request.getSocialId())
                 .build();
         userRepository.save(user);
@@ -50,21 +60,26 @@ public class OAuthService {
                 .name(request.getName())
                 .birthdate(request.getBirthdate())
                 .nickname(request.getNickname())
+                .socialId(request.getSocialId())
+                .account_type(accountType)
                 .build();
         customerRepository.save(customer);
 
         return CustomerDetailsResponse.from(customer);
     }
 
-    public String getGoogleUserInfo(RedirectDto redirectDto) {
+    public UserLoginResponse getGoogleUserInfo(RedirectDto redirectDto) {
         AccessTokenDto accessTokenDto = googleService.getAccessToken(redirectDto.getCode());
         GoogleProfileDto profile = googleService.getGoogleProfile(accessTokenDto.getAccessToken());
 
-        UserEntity user = userRepository.findBySocialId(profile.getSub())
+        UserEntity user = userRepository.findByEmail(profile.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.ADDITIONAL_INFO_REQUIRED,
                         "socialId:" + profile.getSub() + "email:" + profile.getEmail()+", name:"+profile.getFamily_name()+profile.getGiven_name()));
 
-        return jwtTokenProvider.createToken(user.getEmail(), user.getRole().toString());
+        String jwt = jwtTokenProvider.createToken(user.getEmail(), user.getRole().toString());
+        String role = user.getRole().toString();
+
+        return new UserLoginResponse(jwt, role);
     }
 
     // 카카오 로그인

@@ -13,7 +13,7 @@ import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
 import staysplit.hotel_reservation.customer.repository.CustomerRepository;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
-import staysplit.hotel_reservation.user.domain.enums.LoginSource;
+import staysplit.hotel_reservation.user.domain.enums.AccountType;
 import staysplit.hotel_reservation.user.domain.enums.Role;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
@@ -40,7 +40,7 @@ public class CustomerService {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.CUSTOMER)
-                .loginSource(LoginSource.LOCAL)
+                .account_type(AccountType.LOCAL)
                 .build();
 
         userRepository.save(user);

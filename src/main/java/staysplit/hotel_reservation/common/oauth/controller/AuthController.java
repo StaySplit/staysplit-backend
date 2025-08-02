@@ -9,6 +9,7 @@ import staysplit.hotel_reservation.common.oauth.dto.OauthSignupRequest;
 import staysplit.hotel_reservation.common.oauth.dto.RedirectDto;
 import staysplit.hotel_reservation.common.oauth.service.OAuthService;
 import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
+import staysplit.hotel_reservation.user.domain.dto.response.UserLoginResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class AuthController {
     public Response<?> googleLogin(@RequestBody RedirectDto redirectDto) {
         try {
             // 기존 사용자라면 jwt 반환
-            String jwt = oAuthService.getGoogleUserInfo(redirectDto);
-            return Response.success(jwt);
+            UserLoginResponse response = oAuthService.getGoogleUserInfo(redirectDto);
+            return Response.success(response.jwt());
         } catch (AppException e) {
             // 신규 사용자라면 추가 정보 입력 필요
             if (e.getErrorCode() == ErrorCode.ADDITIONAL_INFO_REQUIRED) {
