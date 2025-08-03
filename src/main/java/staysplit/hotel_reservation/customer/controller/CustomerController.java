@@ -95,7 +95,6 @@ public class CustomerController {
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-            log.error("!!!!!@@@ {}",loginResponse);
             return Response.success(
                     new ResultWrapper<>("SUCCESS", "ROLE_" + loginResponse.role())
             );
