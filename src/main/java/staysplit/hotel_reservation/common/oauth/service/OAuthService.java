@@ -76,7 +76,7 @@ public class OAuthService {
         UserEntity user = userRepository.findByEmail(profile.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.ADDITIONAL_INFO_REQUIRED,
                         "socialId:" + profile.getSub() + "email:" + profile.getEmail()+", name:"+profile.getFamily_name()+profile.getGiven_name()));
-log.error("!!!!! {}",user);
+
         String jwt = jwtTokenProvider.createToken(user.getEmail(), user.getRole().toString());
         String role = user.getRole().toString();
 
