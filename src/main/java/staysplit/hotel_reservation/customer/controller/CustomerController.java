@@ -3,6 +3,7 @@ package staysplit.hotel_reservation.customer.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,7 @@ import staysplit.hotel_reservation.user.domain.dto.response.UserLoginResponse;
 
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/customers")
 @RequiredArgsConstructor
@@ -92,7 +94,7 @@ public class CustomerController {
                     .maxAge(jwtExpirationInSeconds)
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            
+
             return Response.success(
                     new ResultWrapper<>("SUCCESS", "ROLE_" + loginResponse.role())
             );

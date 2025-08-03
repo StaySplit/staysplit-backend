@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.common.security.jwt.JwtTokenProvider;
+import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
+import staysplit.hotel_reservation.customer.repository.CustomerRepository;
 import staysplit.hotel_reservation.user.domain.dto.request.PasswordUpdateRequest;
 import staysplit.hotel_reservation.user.domain.dto.response.UserLoginResponse;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
@@ -18,6 +20,7 @@ import staysplit.hotel_reservation.user.repository.UserRepository;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -40,6 +43,13 @@ public class UserService {
         UserEntity user = validateUser(email);
         user.changePassword(passwordEncoder.encode(request.password()));
         return "비밀번호가 변경되었습니다.";
+    }
+
+    public String getNickName(String email){
+        CustomerEntity customer = customerRepository.findByUserEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND,
+                        ErrorCode.USER_NOT_FOUND.getMessage()));
+        return customer.getNickname();
     }
 
     private UserEntity validateUser(String email) {

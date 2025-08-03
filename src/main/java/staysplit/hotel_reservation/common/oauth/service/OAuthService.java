@@ -18,6 +18,7 @@ import staysplit.hotel_reservation.user.domain.enums.AccountType;
 import staysplit.hotel_reservation.user.domain.enums.Role;
 import staysplit.hotel_reservation.user.repository.UserRepository;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
