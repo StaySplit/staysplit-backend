@@ -12,6 +12,7 @@ import staysplit.hotel_reservation.customer.domain.dto.request.NicknameChangeReq
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.domain.dto.response.CustomerDetailsResponse;
 import staysplit.hotel_reservation.customer.repository.CustomerRepository;
+import staysplit.hotel_reservation.reservation.service.UsernameAutocompleteService;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
 import staysplit.hotel_reservation.user.domain.enums.AccountType;
 import staysplit.hotel_reservation.user.domain.enums.Role;
@@ -26,6 +27,7 @@ public class CustomerService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final CartService cartService;
+    private final UsernameAutocompleteService usernameAutocompleteService;
 
     public CustomerDetailsResponse signup(CustomerSignupRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -54,6 +56,8 @@ public class CustomerService {
 
         customerRepository.save(customer);
         cartService.createCart(request.email());
+        usernameAutocompleteService.addUsername(customer.getNickname());
+
         return CustomerDetailsResponse.from(customer);
     }
 
@@ -72,12 +76,15 @@ public class CustomerService {
         if (customerRepository.existsByNickname(request.getNickname())) {
             throw new AppException(ErrorCode.DUPLICATE_NICKNAME, ErrorCode.DUPLICATE_NICKNAME.getMessage());
         }
+        usernameAutocompleteService.removeUsername(customer.getNickname());
         customer.setNickname(request.getNickname());
+        usernameAutocompleteService.addUsername(request.getNickname());
         return CustomerDetailsResponse.from(customer);
     }
 
     public void delete(String email) {
         CustomerEntity customer = validateCustomer(email);
+        usernameAutocompleteService.removeUsername(customer.getNickname());
         cartService.deleteCart(email);
         customerRepository.delete(customer);
     }
