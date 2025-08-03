@@ -76,12 +76,13 @@ public class UserController {
             throw new AppException(ErrorCode.USER_NOT_LOGGED_IN, ErrorCode.USER_NOT_FOUND.getMessage());
         }
         String email = userDetails.getUsername();
+        String nickName = userService.getNickName(email);
         String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse("UNKNOWN");
 
-        UserLoginStatusResponse response = new UserLoginStatusResponse(email, role, true);
+        UserLoginStatusResponse response = new UserLoginStatusResponse(email, nickName, role, true);
         return Response.success(response);
     }
 }
