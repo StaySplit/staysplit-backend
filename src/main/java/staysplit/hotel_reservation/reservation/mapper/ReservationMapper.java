@@ -57,7 +57,7 @@ public class ReservationMapper {
                 .hotelAddress(reservation.getHotel().getAddress())
                 .hotelCheckInTime(reservation.getHotel().getHotelCheckInTime().toString())
                 .hotelCheckOutTime(reservation.getHotel().getHotelCheckOutTime().toString())
-                .hotelPhotos(reservation.getHotel().getPhotos())
+                .hotelPhotos(reservation.getHotel().getMainPhoto().isPresent() ? reservation.getHotel().getMainPhoto().get().buildFullUrl(photoUrlBuilder): null)
 
                 // 방 정보들 (ReservationRoom + Room 조인 정보)
                 .rooms(reservation.getReservedRooms().stream()
