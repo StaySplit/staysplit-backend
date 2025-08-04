@@ -1,12 +1,12 @@
 package staysplit.hotel_reservation.reservation.dto.response;
 
 import lombok.Builder;
-import staysplit.hotel_reservation.photo.domain.PhotoEntity;
 import staysplit.hotel_reservation.reservedRoom.dto.response.ReservedRoomInfo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Builder
 public record ReservationInfoListResponse(
         // 예약 기본 정보
@@ -25,7 +25,7 @@ public record ReservationInfoListResponse(
         String hotelAddress,
         String hotelCheckInTime,
         String hotelCheckOutTime,
-        List<PhotoEntity> hotelPhotos,
+        String hotelPhotos,
 
         // 방 정보들
         List<ReservedRoomInfo> rooms
