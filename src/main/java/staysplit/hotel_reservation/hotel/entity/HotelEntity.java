@@ -8,6 +8,7 @@ import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.*;
 
 @Entity
@@ -42,6 +43,12 @@ public class HotelEntity {
 
     @Builder.Default
     private Integer reviewCount = 0;
+
+    @Column
+    private LocalTime hotelCheckInTime;
+
+    @Column
+    private LocalTime hotelCheckOutTime;
 
     @Builder.Default
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
