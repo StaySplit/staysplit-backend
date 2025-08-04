@@ -12,6 +12,7 @@ import staysplit.hotel_reservation.customer.service.CustomerValidator;
 import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
 import staysplit.hotel_reservation.provider.service.ProviderValidator;
 import staysplit.hotel_reservation.reservation.dto.response.ReservationDetailResponse;
+import staysplit.hotel_reservation.reservation.dto.response.ReservationInfoListResponse;
 import staysplit.hotel_reservation.reservation.dto.response.ReservationListResponse;
 import staysplit.hotel_reservation.reservation.domain.entity.ReservationEntity;
 import staysplit.hotel_reservation.reservation.domain.enums.ReservationStatus;
@@ -19,6 +20,7 @@ import staysplit.hotel_reservation.reservation.dto.response.ReservationListRespo
 import staysplit.hotel_reservation.reservation.mapper.ReservationMapper;
 import staysplit.hotel_reservation.reservation.reposiotry.ReservationRepository;
 import staysplit.hotel_reservation.reservation.reposiotry.search.ReservationSearchConditionForProviders;
+import staysplit.hotel_reservation.reservedRoom.repository.ReservedRoomRepository;
 
 import java.time.LocalDate;
 
@@ -28,12 +30,22 @@ import java.time.LocalDate;
 public class ReservationQueryService {
 
     private final ReservationRepository reservationRepository;
+    private final ReservedRoomRepository reservedRoomRepository;
     private final CustomerValidator customerValidator;
     private final ProviderValidator providerValidator;
     private final ReservationMapper mapper;
 
+    public Page<ReservationInfoListResponse> findAllReservationsByCustomer(String email, Pageable pageable) {
+        CustomerEntity customer = customerValidator.validateCustomerByEmail(email);
 
-    public Page<ReservationListResponse> findAllReservationsByCustomer(String email, ReservationStatus status,
+        Page<ReservationEntity> reservations = reservationRepository
+                .findReservationsWithRoomByCustomerId(customer.getId(), pageable);
+
+        return reservations.map(mapper::toReservationListResponse);
+    }
+
+    @Deprecated
+    public Page<ReservationListResponse> findAllReservationsByCustomerWithFilter(String email, ReservationStatus status,
                                                                        LocalDate afterDate, Pageable pageable) {
         CustomerEntity customer = customerValidator.validateCustomerByEmail(email);
         return reservationRepository.findReservationsByCustomerWithFilters(customer.getId(), status, afterDate, pageable)

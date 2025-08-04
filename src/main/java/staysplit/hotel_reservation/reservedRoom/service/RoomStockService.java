@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import staysplit.hotel_reservation.common.exception.AppException;
 import staysplit.hotel_reservation.common.exception.ErrorCode;
+import staysplit.hotel_reservation.reservedRoom.entity.ReservedRoomEntity;
 import staysplit.hotel_reservation.reservedRoom.repository.ReservedRoomRepository;
 import staysplit.hotel_reservation.room.domain.RoomEntity;
 

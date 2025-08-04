@@ -8,5 +8,13 @@ import staysplit.hotel_reservation.reservation.reposiotry.search.ReservationRepo
 
 @Repository
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Integer>, ReservationRepositoryCustom {
+/*
+    QueryDSL사용하지 않는경우 사용
+    @Query("SELECT r FROM ReservationEntity r " +
+            "JOIN FETCH r.hotel h " +
+            "WHERE r.customer.id = :customerId " +
+            "ORDER BY r.createdAt DESC")
+    Page<ReservationEntity> findReservationsWithRoomByCustomerId(@Param("customerId") Integer customerId, Pageable pageable);
+*/
 
 }

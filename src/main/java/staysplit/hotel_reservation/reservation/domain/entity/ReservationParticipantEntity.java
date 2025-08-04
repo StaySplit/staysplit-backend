@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.reservation.domain.enums.PaymentStatus;
+import staysplit.hotel_reservation.reservedRoom.entity.ReservedRoomEntity;
 
 @Entity
 @Getter
@@ -26,13 +27,17 @@ public class ReservationParticipantEntity {
     @JoinColumn(nullable = false)
     private CustomerEntity customer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_room_id", nullable = false)
+    private ReservedRoomEntity reservedRoom;
+
     @Column(nullable = false)
     private Integer splitAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
-    private PaymentStatus paymentStatus = PaymentStatus.WAITING;
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
     private String invitationToken;
 
@@ -41,7 +46,7 @@ public class ReservationParticipantEntity {
     }
 
     public boolean isPaid() {
-        return this.paymentStatus == PaymentStatus.COMPLETE;
+        return this.paymentStatus == PaymentStatus.CONFIRMED;
     }
 
 }

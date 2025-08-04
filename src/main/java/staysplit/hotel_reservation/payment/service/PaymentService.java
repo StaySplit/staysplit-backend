@@ -117,7 +117,7 @@ public class PaymentService {
         }
 
         List<ReservationParticipantEntity> participants = participantRepository.findByReservationId(reservationId);
-        boolean allCompleted = participants.stream().allMatch(p -> p.getPaymentStatus() == PaymentStatus.COMPLETE);
+        boolean allCompleted = participants.stream().allMatch(p -> p.getPaymentStatus() == PaymentStatus.CONFIRMED);
 
         if (allCompleted) {
             reservation.updateStatus(ReservationStatus.CONFIRMED);

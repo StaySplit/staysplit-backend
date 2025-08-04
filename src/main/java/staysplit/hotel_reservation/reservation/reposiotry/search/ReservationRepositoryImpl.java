@@ -37,6 +37,55 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     QCustomerEntity customer = QCustomerEntity.customerEntity;
     QUserEntity user = QUserEntity.userEntity;
 
+    @Override
+    public Page<ReservationEntity> findReservationsWithRoomByCustomerId(Integer customerId, Pageable pageable) {
+        QReservationEntity reservation = QReservationEntity.reservationEntity;
+        QHotelEntity hotel = QHotelEntity.hotelEntity;
+
+        List<ReservationEntity> results = queryFactory
+                .selectFrom(reservation)
+                .join(reservation.hotel, hotel).fetchJoin()
+                .where(reservation.customer.id.eq(customerId))
+                .orderBy(reservation.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(reservation.count())
+                .from(reservation)
+                .where(reservation.customer.id.eq(customerId))
+                .fetchOne();
+
+        return new PageImpl<>(results, pageable, total != null ? total : 0);
+    }
+
+    @Override
+    public Page<ReservationEntity> findReservationsByCustomer(Integer customerId, Pageable pageable) {
+        QReservationEntity reservation = QReservationEntity.reservationEntity;
+        QReservationParticipantEntity participant = QReservationParticipantEntity.reservationParticipantEntity;
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(participant.customer.id.eq(customerId));
+
+        List<ReservationEntity> results = queryFactory
+                .selectFrom(reservation)
+                .distinct()
+                .join(reservation.participants, participant)
+                .where(booleanBuilder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long total = queryFactory
+                .select(reservation.count())
+                .from(reservation)
+                .join(reservation.participants, participant)
+                .where(booleanBuilder)
+                .fetchOne();
+
+        return new PageImpl<>(results, pageable, total != null ? total : 0);
+    }
 
     // customer id, Reservation Status, 특정 Local Date 이후로 검색 가능
     // TODO: 특정 날짜 이후의 모든 예약을 조회하는 게 이상함. 어떻게 바꿀까? date range?
