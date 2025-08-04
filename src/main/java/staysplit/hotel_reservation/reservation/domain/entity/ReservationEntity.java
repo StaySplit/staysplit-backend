@@ -3,6 +3,7 @@ package staysplit.hotel_reservation.reservation.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.hotel.entity.HotelEntity;
 import staysplit.hotel_reservation.reservation.domain.enums.ReservationStatus;
 import staysplit.hotel_reservation.reservedRoom.entity.ReservedRoomEntity;
@@ -23,6 +24,14 @@ public class ReservationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false )
+    private CustomerEntity customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", nullable = false)
+    private HotelEntity hotel;
 
     @Column(nullable = false, unique = true, length = 50)
     private String reservationNumber;
@@ -53,7 +62,7 @@ public class ReservationEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
-    private ReservationStatus status = ReservationStatus.WAITING_PAYMENT;
+    private ReservationStatus status = ReservationStatus.PENDING;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -61,9 +70,6 @@ public class ReservationEntity {
     @Column(nullable = false)
     private LocalDateTime expiresAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id", nullable = false)
-    private HotelEntity hotel;
 
     public void addReservedRoom(ReservedRoomEntity reservedRoom) {
         reservedRooms.add(reservedRoom);

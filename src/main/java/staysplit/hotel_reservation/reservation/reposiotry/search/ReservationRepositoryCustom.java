@@ -10,6 +10,12 @@ import java.time.LocalDate;
 
 @Repository
 public interface ReservationRepositoryCustom {
+
+    Page<ReservationEntity> findReservationsWithRoomByCustomerId(Integer customerId, Pageable pageable);
+
+    Page<ReservationEntity> findReservationsByCustomer(Integer customerId, Pageable pageable);
+
+    @Deprecated
     Page<ReservationEntity> findReservationsByCustomerWithFilters(Integer customerId, ReservationStatus status,
                                                                    LocalDate afterDate, Pageable pageable);
 

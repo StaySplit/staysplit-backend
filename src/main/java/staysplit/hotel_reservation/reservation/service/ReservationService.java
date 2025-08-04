@@ -83,7 +83,7 @@ public class ReservationService {
         ReservationEntity reservation = validateReservation(reservationId);
 
         for (ReservationParticipantEntity participant : reservation.getParticipants()) {
-            if (!participant.getPaymentStatus().equals(PaymentStatus.COMPLETE)) {
+            if (!participant.getPaymentStatus().equals(PaymentStatus.CONFIRMED)) {
                 throw new AppException(ErrorCode.PAYMENT_INCOMPLETE_FOR_ALL_PARTICIPANTS,
                         ErrorCode.PAYMENT_INCOMPLETE_FOR_ALL_PARTICIPANTS.getMessage());
             }
@@ -111,7 +111,7 @@ public class ReservationService {
                     .customer(participantCustomer)
                     .reservation(reservation)
                     .splitAmount(splitAmount)
-                    .paymentStatus(PaymentStatus.WAITING)
+                    .paymentStatus(PaymentStatus.PENDING)
                     .build();
 
             participantRepository.save(participant);
