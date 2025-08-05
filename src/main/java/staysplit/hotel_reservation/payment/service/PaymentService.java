@@ -5,6 +5,8 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import staysplit.hotel_reservation.common.exception.AppException;
@@ -13,6 +15,7 @@ import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.repository.CustomerRepository;
 import staysplit.hotel_reservation.payment.domain.dto.request.CreatePaymentRequest;
 import staysplit.hotel_reservation.payment.domain.dto.response.CreatePaymentResponse;
+import staysplit.hotel_reservation.payment.domain.dto.response.GetPaymentResponse;
 import staysplit.hotel_reservation.payment.domain.entity.PaymentEntity;
 import staysplit.hotel_reservation.payment.repository.PaymentRepository;
 import staysplit.hotel_reservation.reservation.domain.entity.ReservationEntity;
@@ -25,7 +28,6 @@ import staysplit.hotel_reservation.reservation.reposiotry.ReservationRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -99,12 +101,34 @@ public class PaymentService {
         return CreatePaymentResponse.from(payment);
     }
 
+/*
     @Transactional(readOnly = true)
-    public List<CreatePaymentResponse> getPaymentsByCustomer(Long customerId) {
+    public List<CreatePaymentResponse> getPaymentsByCustomer(Integer customerId) {
         return paymentRepository.findByCustomerId(customerId).stream()
                 .map(CreatePaymentResponse::from)
                 .collect(Collectors.toList());
     }
+*/
+
+    @Transactional(readOnly = true)
+    public GetPaymentResponse getPaymentsByReservationId(Integer reservationId) {
+        PaymentEntity payment = paymentRepository.findByReservationId(reservationId);
+        if (payment == null) {
+            throw new AppException(ErrorCode.INVALID_PAYMENT, ErrorCode.INVALID_PAYMENT.getMessage());
+        }
+        return GetPaymentResponse.from(payment);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<GetPaymentResponse> getPaymentsByCustomerId(Integer customerId, Pageable page) {
+        Page<PaymentEntity> payment = paymentRepository.findByCustomerId(customerId, page);
+        if (payment.isEmpty()) {
+            throw new AppException(ErrorCode.INVALID_PAYMENT, ErrorCode.INVALID_PAYMENT.getMessage());
+        }
+        return payment.map(GetPaymentResponse::from);
+
+    }
+
 
     private void changeReservationStatus(Integer customerId, Integer reservationId, boolean isSplitPayment) {
         ReservationEntity reservation = reservationRepository.findById(reservationId)
