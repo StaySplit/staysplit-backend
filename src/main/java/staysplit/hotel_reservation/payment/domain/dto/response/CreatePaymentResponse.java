@@ -6,7 +6,7 @@ import staysplit.hotel_reservation.payment.domain.enums.PaymentStatus;
 import java.time.LocalDateTime;
 
 public record CreatePaymentResponse(
-        Long paymentId,
+        Integer paymentId,
         PaymentStatus status,
         LocalDateTime paidAt
 ) {
