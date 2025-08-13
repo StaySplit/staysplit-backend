@@ -16,6 +16,9 @@ public class ProviderEntity {
     @Column(name = "provider_id")
     private Integer id;
 
+    @Column(name = "nickname")
+    private String nickname;
+
     @MapsId
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

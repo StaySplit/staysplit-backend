@@ -41,11 +41,12 @@ public class ProviderService {
 
         ProviderEntity provider = ProviderEntity.builder()
                 .user(user)
+                .nickname(request.nickname())
                 .build();
 
         providerRepository.save(provider);
 
-        return new ProviderSignupResponse(provider.getUser().getEmail());
+        return new ProviderSignupResponse(provider.getUser(), provider.getNickname());
     }
 
     public ProviderDetailResponse getMyPage(String email) {

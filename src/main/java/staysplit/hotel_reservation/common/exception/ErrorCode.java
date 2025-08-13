@@ -20,6 +20,7 @@ public enum ErrorCode {
     USER_NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED, "로그인 상태가 아닙니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
     INVALID_ACCOUNT_TYPE(HttpStatus.NOT_FOUND, "지원하지 않는 소셜 타입입니다."),
+    INVALID_ROLE(HttpStatus.NOT_FOUND, "지원하지 않는 유저 타입입니다."),
 
     // Room
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 방입니다"),

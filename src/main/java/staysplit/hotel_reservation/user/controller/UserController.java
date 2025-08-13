@@ -1,6 +1,5 @@
 package staysplit.hotel_reservation.user.controller;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +39,9 @@ public class UserController {
 
         ResponseCookie cookie = ResponseCookie.from("token", response.jwt())
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
-                .sameSite("Lax")
+                .sameSite("None")
                 .maxAge(jwtExpirationInSeconds)
                 .build();
         httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -60,13 +59,17 @@ public class UserController {
 
     @PostMapping("/logout")
     public Response<String> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
 
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("token", null)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("None")
+                .maxAge(0)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+
         return Response.success("로그아웃 성공");
     }
 
@@ -76,11 +79,11 @@ public class UserController {
             throw new AppException(ErrorCode.USER_NOT_LOGGED_IN, ErrorCode.USER_NOT_FOUND.getMessage());
         }
         String email = userDetails.getUsername();
-        String nickName = userService.getNickName(email);
         String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse("UNKNOWN");
+        String nickName = userService.getNickName(email, role);
 
         UserLoginStatusResponse response = new UserLoginStatusResponse(email, nickName, role, true);
         return Response.success(response);

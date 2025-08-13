@@ -88,9 +88,9 @@ public class CustomerController {
 
             ResponseCookie cookie = ResponseCookie.from("token", loginResponse.jwt())
                     .httpOnly(true)
-                    .secure(false)
+                    .secure(true)
                     .path("/")
-                    .sameSite("Lax")
+                    .sameSite("None")
                     .maxAge(jwtExpirationInSeconds)
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
