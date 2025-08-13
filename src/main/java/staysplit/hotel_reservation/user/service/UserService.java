@@ -9,6 +9,8 @@ import staysplit.hotel_reservation.common.exception.ErrorCode;
 import staysplit.hotel_reservation.common.security.jwt.JwtTokenProvider;
 import staysplit.hotel_reservation.customer.domain.entity.CustomerEntity;
 import staysplit.hotel_reservation.customer.repository.CustomerRepository;
+import staysplit.hotel_reservation.provider.domain.entity.ProviderEntity;
+import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 import staysplit.hotel_reservation.user.domain.dto.request.PasswordUpdateRequest;
 import staysplit.hotel_reservation.user.domain.dto.response.UserLoginResponse;
 import staysplit.hotel_reservation.user.domain.entity.UserEntity;
@@ -21,6 +23,7 @@ import staysplit.hotel_reservation.user.repository.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
+    private final ProviderRepository providerRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -45,11 +48,20 @@ public class UserService {
         return "비밀번호가 변경되었습니다.";
     }
 
-    public String getNickName(String email){
-        CustomerEntity customer = customerRepository.findByUserEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND,
-                        ErrorCode.USER_NOT_FOUND.getMessage()));
-        return customer.getNickname();
+    public String getNickName(String email, String role){
+        if (role.contains("CUSTOMER")) {
+            CustomerEntity customer = customerRepository.findByUserEmail(email)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND,
+                            ErrorCode.USER_NOT_FOUND.getMessage()));
+            return customer.getNickname();
+        } else if (role.contains("PROVIDER")) {
+            ProviderEntity provider = providerRepository.findByEmail(email)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND,
+                            ErrorCode.USER_NOT_FOUND.getMessage()));
+            return provider.getNickname();
+        } else {
+            throw new AppException(ErrorCode.INVALID_ROLE, "Invalid role: " + role);
+        }
     }
 
     private UserEntity validateUser(String email) {

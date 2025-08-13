@@ -40,12 +40,13 @@ class ProviderServiceTest {
     private final String email = "provider@example.com";
     private final String rawPassword = "12345";
     private final String encodedPassword = "ncodedPassword";
+    private final String nickName = "testNick";
 
     private ProviderSignupRequest signupRequest;
 
     @BeforeEach
     void setUp() {
-        signupRequest = new ProviderSignupRequest(email, rawPassword);
+        signupRequest = new ProviderSignupRequest(email, rawPassword, nickName);
     }
 
     @Test
