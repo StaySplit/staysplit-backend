@@ -90,7 +90,12 @@ public class SecurityConfig {
 
         // TODO: 추가적으로 배포 url이 나오면 추가
 
-        configuration.setAllowedOrigins(Arrays.asList("https://localhost:5173","http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "https://localhost:5173",
+                "http://localhost:3000",
+                "https://da9084423ea2.ngrok-free.app",  // 프론트엔드 ngrok
+                "https://6323f9429501.ngrok-free.app"   // 백엔드 ngrok (필요시)
+                ));
         configuration.setAllowedMethods(Arrays.asList("*")); // 모든 http method 허용
         configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 http header 허용
         configuration.setAllowCredentials(true); // Authorization header 허용
