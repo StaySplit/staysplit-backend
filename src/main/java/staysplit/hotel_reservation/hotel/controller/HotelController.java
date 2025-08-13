@@ -1,6 +1,7 @@
 package staysplit.hotel_reservation.hotel.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,6 +15,7 @@ import staysplit.hotel_reservation.hotel.service.HotelService;
 import staysplit.hotel_reservation.room.dto.response.RoomInfoResponse;
 import staysplit.hotel_reservation.room.service.RoomService;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/hotels")

@@ -1,6 +1,7 @@
 package staysplit.hotel_reservation.hotel.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,13 @@ import staysplit.hotel_reservation.provider.repository.ProviderRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -42,8 +45,8 @@ public class HotelService {
                 .provider(provider)
                 .name(request.name())
                 .address(request.address())
-                .longitude(request.longitude())
-                .latitude(request.latitude())
+                .longitude(BigDecimal.valueOf(request.longitude()))
+                .latitude(BigDecimal.valueOf(request.latitude()))
                 .description(request.description())
                 .starLevel(request.starLevel())
                 .build();
