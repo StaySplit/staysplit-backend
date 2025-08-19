@@ -3,10 +3,12 @@ package staysplit.hotel_reservation.photo.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import staysplit.hotel_reservation.common.entity.Response;
 import staysplit.hotel_reservation.photo.dto.response.PhotoDetailResponse;
@@ -22,6 +24,12 @@ import java.util.List;
 public class PhotoController {
 
     private final PhotoUploadService photoUploadService;
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Response<String>> handleMaxSizeException(MaxUploadSizeExceededException exc) {
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(Response.error("파일 크기가 너무 큽니다. 최대 10MB까지 업로드 가능합니다."));
+    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Response<PhotoDetailResponse> uploadPhoto(@RequestParam("entityType") String entityType,
@@ -53,6 +61,8 @@ public class PhotoController {
         String contentType = "image/jpeg";
 
         return ResponseEntity.ok()
+                .header("ngrok-skip-browser-warning", "true")
+                .header("Access-Control-Allow-Origin", "*")
                 .contentType(MediaType.parseMediaType(contentType))
                 .body(resource);
     }
